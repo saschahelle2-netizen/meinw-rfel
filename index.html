@@ -3,88 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mein Privater Würfel</title>
+    <title>SAB-DICE PREMIUM - Dein Farb-Würfeltisch</title>
+    
+    <!-- Tailwind CSS für erstklassiges, responsives Design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts für erstklassige Typografie -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-            transition: background 0.3s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
         }
-        /* Bunt-Modus (Standard) */
-        body.colors-on { background-color: #e0f7fa; }
-        body.colors-on .dice { background: linear-gradient(145deg, #ff4081, #81c784); color: white; border: none; }
-        body.colors-on button { background-color: #0288d1; color: white; }
-
-        /* Schwarz-Weiß-Modus */
-        body.colors-off { background-color: #ffffff; }
-        body.colors-off .dice { background: #ffffff; color: #000000; border: 4px solid #000000; }
-        body.colors-off button { background-color: #000000; color: white; }
-
-        .dice {
-            width: 120px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: bold;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-            transition: transform 0.2s, background 0.3s;
-        }
-        .rolling { transform: rotate(360deg) scale(0.8); }
         
-        button, select {
-            padding: 10px 20px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .controls { margin-top: 20px; }
-    </style>
-</head>
-<body class="colors-on">
-
-    <div class="dice" id="dice">1</div>
-    <button onclick="rollDice()">Würfeln</button>
-
-    <div class="controls">
-        <label for="colorToggle">Farben:</label>
-        <select id="colorToggle" onchange="toggleColors(this.value)">
-            <option value="on">An (Bunt)</option>
-            <option value="off">Aus (Monochrom)</option>
-        </select>
-    </div>
-
-    <script>
-        function rollDice() {
-            const dice = document.getElementById('dice');
-            dice.classList.add('rolling');
-            
-            setTimeout(() => {
-                const result = Math.floor(Math.random() * 6) + 1;
-                dice.innerText = result;
-                dice.classList.remove('rolling');
-            }, 200);
+        .font-header {
+            font-family: 'Space Grotesk', sans-serif;
         }
 
-        function toggleColors(value) {
-            if (value === 'on') {
-                document.body.className = 'colors-on';
-            } else {
-                document.body.className = 'colors-off';
+        /* Würfel-Tauch- und Drehanimationen für echten 3D-Vibe */
+        @keyframes dice-tumble {
+            0% {
+                transform: scale(0.3) rotate(0deg) translate(0, -100px);
+                filter: blur(4px);
+                box-shadow: 0 40px 50px rgba(0,0,0,0.6);
+            }
+            30% {
+                transform: scale(1.15) rotate(180deg) translate(20px, 10px) skewX(10deg);
+                filter: blur(1px);
+                box-shadow: 0 60px 80px rgba(0,0,0,0.8);
+            }
+            60% {
+                transform: scale(0.9) rotate(390deg) translate(-15px, -10px) skewY(-5deg);
+                box-shadow: 0 20px 30px rgba(0,0,0,0.4);
+            }
+            80% {
+                transform: scale(1.05) rotate(350deg) translate(5px, 2px);
+                box-shadow: 0 15px 20px rgba(0,0,0,0.3);
+            }
+            100% {
+                transform: scale(1) rotate(360deg) translate(0, 0);
+                box-shadow: 0 20px 35px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.3);
             }
         }
+
+        .animate-tumble {
+            animation: dice-tumble 0.75s cubic-bezier(0.25, 1, 0.5, 1) both;
+        }
+
+        /* Pulsierender Effekt für die Live-Summe */
+        @keyframes led-pulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(99, 102, 241, 0.5), 0 0 20px rgba(99, 102, 241, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(99, 102, 241, 0.8), 0 0 30px rgba(99, 102, 241, 0.6), 0 0 40px rgba(168, 85, 247, 0.5); }
+        }
+        .pulse-led {
+            animation: led-pulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+
+    <header class="w-full max-w-5xl mx-auto px-4 pt-6 pb-2 flex flex-col sm:flex-row justify-between items-center gap-4 z-10">
+        <div class="text-center sm:text-left">
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight font-header bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
+                SAB-DICE PREMIUM
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1 font-medium tracking-wide">Dein privater Farb-Würfeltisch ohne Zahlen</p>
+        </div>
+        
+        <!-- Live-Anzeige für aktive Farben im Pool -->
+        <div class="bg-slate-900/90 border border-slate-700/50 px-6 py-3 rounded-2xl flex items-center gap-4 shadow-2xl backdrop-blur-md">
+            <div class="text-slate-400 text-xs font-bold uppercase tracking-wider font-header">Farben im Pool</div>
+            <div id="active-colors-count" class="text-3xl font-black text-indigo-400 font-header pulse-led">9</div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-4 py-4 flex-grow flex flex-col justify-center items-center gap-8">
+        <div class="w-full max-w-3xl bg-slate-950/40 rounded-[3rem] p-6 sm:p-10 border border-indigo-500/20 shadow-[inset_0_0_80px_rgba(30,27,75,0.8),0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-sm relative overflow-hidden flex flex-col items-center">
+            
+            <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 to-purple-500/5 pointer-events-none"></div>
+
+            <!-- Würfel-Grid (Vollständige 3D-Glanzkacheln ohne Zahlen) -->
+            <div id="dice-grid" class="grid grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-2xl relative z-10">
+                <!-- Kachel 1 -->
+                <div id="dice-container-0" class="flex flex-col items-center">
+                    <div onclick="rollSingle(0)" class="dice w-24 h-24 sm:w-28 sm:h-28 bg-indigo-600 rounded-[1.75rem] shadow-2xl cursor-pointer border border-white/15 active:scale-95 hover:scale-105 transition-all duration-300 relative group overflow-hidden">
+                        <!-- Edelglanz-Reflexe -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/40 pointer-events-none"></div>
+                        <div class="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none"></div>
+                        <div class="absolute inset-0 ring-1 ring-inset ring-white/20 rounded-[1.75rem] pointer-events-none"></div>
+                    </div>
+                    <span class="text-[10px] font-bold tracking-widest text-indigo-400/60 uppercase mt-3">Kachel 1</span>
+                </div>
+
+                <!-- Kachel 2 -->
+                <div id="dice-container-1" class="flex flex-col items-center">
+                    <div onclick="rollSingle(1)" class="dice w-24 h-24 sm:w-28 sm:h-28 bg-purple-600 rounded-[1.75rem] shadow-2xl cursor-pointer border border-white/15 active:scale-95 hover:scale-105 transition-all duration-300 relative group overflow-hidden">
+                        <!-- Edelglanz-Reflexe -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/40 pointer-events-none"></div>
+                        <div class="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none"></div>
+                        <div class="absolute inset-0 ring-1 ring-inset ring-white/20 rounded-[1.75rem] pointer-events-none"></div>
+                    </div>
+                    <span class="text-[10px] font-bold tracking-widest text-purple-400/60 uppercase mt-3">Kachel 2</span>
+                </div>
+
+                <!-- Kachel 3 -->
+                <div id="dice-container-2" class="flex flex-col items-center">
+                    <div onclick="rollSingle(2)" class="dice w-24 h-24 sm:w-28 sm:h-28 bg-pink-600 rounded-[1.75rem] shadow-2xl cursor-pointer border border-white/15 active:scale-95 hover:scale-105 transition-all duration-300 relative group overflow-hidden">
+                        <!-- Edelglanz-Reflexe -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/40 pointer-events-none"></div>
+                        <div class="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none"></div>
+                        <div class="absolute inset-0 ring-1 ring-inset ring-white/20 rounded-[1.75rem] pointer-events-none"></div>
+                    </div>
+                    <span class="text-[10px] font-bold tracking-widest text-pink-400/60 uppercase mt-3">Kachel 3</span>
+                </div>
+
+                <!-- Kachel 4 -->
+                <div id="dice-container-3" class="flex flex-col items-center">
+                    <div onclick="rollSingle(3)" class="dice w-24 h-24 sm:w-28 sm:h-28 bg-teal-600 rounded-[1.75rem] shadow-2xl cursor-pointer border border-white/15 active:scale-95 hover:scale-105 transition-all duration-300 relative group overflow-hidden">
+                        <!-- Edelglanz-Reflexe -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/40 pointer-events-none"></div>
+                        <div class="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none"></div>
+                        <div class="absolute inset-0 ring-1 ring-inset ring-white/20 rounded-[1.75rem] pointer-events-none"></div>
+                    </div>
+                    <span class="text-[10px] font-bold tracking-widest text-teal-400/60 uppercase mt-3">Kachel 4</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons zum Auslösen -->
+        <div class="flex flex-col sm:flex-row gap-4 items-center w-full max-w-lg justify-center">
+            <button onclick="rollAll()" class="w-full sm:w-auto px-12 py-5 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-extrabold text-xl shadow-[0_10px_30px_rgba(99,102,241,0.4)] active:scale-[0.97] transition-all duration-150 tracking-wider font-header">
+                MISCHEN / WÜRFELN
+            </button>
+            <button onclick="resetDice()" class="w-full sm:w-auto px-8 py-5 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 font-bold text-sm transition-all duration-150 border border-slate-700/50 active:scale-[0.97] font-header">
+                ZURÜCKSETZEN
+            </button>
+        </div>
+    </main>
+
+    <footer class="w-full bg-slate-950/70 border-t border-slate-800/80 py-8 px-6 backdrop-blur-md">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <h3 class="text-lg font-bold font-header text-slate-100 flex items-center justify-center md:justify-start gap-2">
+                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                        Farben-Pool verwalten
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1 font-medium">Aktiviere oder deaktiviere Farben. Deine Kacheln nutzen nur die ausgewählten Farben beim Mischen.</p>
+                </div>
+
+                <!-- Farb-Pool-Auswahl -->
+                <div id="color-selectors" class="flex flex-wrap justify-center gap-3">
+                    <!-- Wird dynamisch mit eleganten JS-Buttons befüllt -->
+                </div>
+            </div>
+            
+            <div class="text-center text-[10px] text-indigo-400/40 font-bold uppercase tracking-widest mt-8">
+                Tipp: Klicke auf eine einzelne Farbkachel, um nur diese neu zu mischen!
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Farbdefinitionen für die Kacheln
+        const COLORS = {
+            indigo: { name: 'Indigo-Blau', bg: 'bg-indigo-600' },
+            purple: { name: 'Violett', bg: 'bg-purple-600' },
+            pink: { name: 'Neon-Pink', bg: 'bg-pink-600' },
+            teal: { name: 'Smaragd-Mint', bg: 'bg-teal-600' },
+            red: { name: 'Feuer-Rot', bg: 'bg-rose-600' },
+            orange: { name: 'Sunset-Orange', bg: 'bg-orange-600' },
+            emerald: { name: 'Kristall-Grün', bg: 'bg-emerald-600' },
+            yellow: { name: 'Sonne-Gelb', bg: 'bg-yellow-500' },
+            slate: { name: 'Asche-Grau', bg: 'bg-slate-600' }
+        };
+
+        // Standardmäßig aktive Farben im Pool
+        let activeColors = ['indigo', 'purple', 'pink', 'teal', 'red', 'orange', 'emerald', 'yellow', 'slate'];
+
+        // Zustand der 4 Kacheln (Farben)
+        const diceState = [
+            { color: 'indigo' },
+            { color: 'purple' },
+            { color: 'pink' },
+            { color: 'teal' }
+        ];
+
+        // Web Audio Synthesizer für realistischen Würfelklang
+        let audioCtx = null;
+        function playRollSound() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const now = audioCtx.currentTime;
+                for (let i = 0; i < 3; i++) {
+                    const hitTime = now + (i * 0.08);
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(160 - (i * 30), hitTime);
+                    osc.frequency.exponentialRampToValueAtTime(30, hitTime + 0.08);
+                    
+                    gain.gain.setValueAtTime(0.25 - (i * 0.05), hitTime);
+                    gain.gain.linearRampToValueAtTime(0.01, hitTime + 0.08);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.start(hitTime);
+                    osc.stop(hitTime + 0.08);
+                }
+            } catch (e) {
+                // Stiller Fallback falls blockiert
+            }
+        }
+
+        // Rendert eine einzelne Kachel neu (Farbe anwenden)
+        function renderDice(index) {
+            const container = document.getElementById(`dice-container-${index}`).querySelector('.dice');
+            const state = diceState[index];
+            const colorInfo = COLORS[state.color] || COLORS.slate;
+
+            // Hintergrundklasse dynamisch austauschen, Glanzeffekte erhalten
+            container.className = `dice w-24 h-24 sm:w-28 sm:h-28 rounded-[1.75rem] shadow-2xl cursor-pointer border border-white/15 active:scale-95 hover:scale-105 transition-all duration-300 relative group overflow-hidden ${colorInfo.bg}`;
+        }
+
+        // Holt eine zufällige Farbe aus dem aktiven Pool
+        function getRandomColorKey() {
+            if (activeColors.length === 0) return 'slate';
+            return activeColors[Math.floor(Math.random() * activeColors.length)];
+        }
+
+        // Einzelne Kachel mischen
+        function rollSingle(index) {
+            const container = document.getElementById(`dice-container-${index}`).querySelector('.dice');
+            
+            // Animation triggern
+            container.classList.remove('animate-tumble');
+            void container.offsetWidth; // CSS-Trigger
+            container.classList.add('animate-tumble');
+            
+            playRollSound();
+
+            let iterations = 0;
+            const interval = setInterval(() => {
+                diceState[index].color = getRandomColorKey();
+                renderDice(index);
+                
+                iterations++;
+                if (iterations > 8) {
+                    clearInterval(interval);
+                }
+            }, 70);
+        }
+
+        // Alle Kacheln nacheinander elegant mischen
+        function rollAll() {
+            for (let i = 0; i < 4; i++) {
+                setTimeout(() => {
+                    rollSingle(i);
+                }, i * 65); // Leicht zeitversetzt für weicheren Flow
+            }
+        }
+
+        // Zurücksetzen auf die Standardfarben
+        function resetDice() {
+            const defaultColors = ['indigo', 'purple', 'pink', 'teal'];
+            diceState.forEach((state, i) => {
+                state.color = defaultColors[i] || 'slate';
+                renderDice(i);
+            });
+        }
+
+        // Farbe im Pool an/aus-schalten
+        function toggleColorPool(key) {
+            const index = activeColors.indexOf(key);
+            if (index > -1) {
+                // Mindestens eine Farbe muss aktiv bleiben
+                if (activeColors.length > 1) {
+                    activeColors.splice(index, 1);
+                }
+            } else {
+                activeColors.push(key);
+            }
+            renderColorSelectors();
+        }
+
+        // Farbbuttons im Footer rendern
+        function renderColorSelectors() {
+            const container = document.getElementById('color-selectors');
+            container.innerHTML = '';
+
+            // Update die Live-Pool Anzeige im Header
+            document.getElementById('active-colors-count').innerText = activeColors.length;
+
+            Object.entries(COLORS).forEach(([key, value]) => {
+                const isActive = activeColors.includes(key);
+                const button = document.createElement('button');
+                button.onclick = () => toggleColorPool(key);
+                
+                button.className = `flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 border ${
+                    isActive 
+                    ? 'bg-slate-900 border-indigo-500/80 text-white shadow-[0_4px_12px_rgba(99,102,241,0.2)] scale-105' 
+                    : 'bg-slate-950/60 text-slate-500 border-slate-900 opacity-40 hover:opacity-100 line-through'
+                }`;
+
+                // Kleiner runder Farbkreis im Button
+                const dot = document.createElement('span');
+                dot.className = `w-4 h-4 rounded-full inline-block ${value.bg} border border-white/20`;
+                
+                button.appendChild(dot);
+                
+                const textNode = document.createElement('span');
+                textNode.innerText = value.name;
+                button.appendChild(textNode);
+                
+                container.appendChild(button);
+            });
+        }
+
+        // Init beim Laden
+        window.onload = function() {
+            for (let i = 0; i < 4; i++) {
+                renderDice(i);
+            }
+            renderColorSelectors();
+        };
     </script>
 </body>
 </html>
