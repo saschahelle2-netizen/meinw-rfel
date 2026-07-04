@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein Privater Würfel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            transition: background 0.3s;
+        }
+        /* Bunt-Modus (Standard) */
+        body.colors-on { background-color: #e0f7fa; }
+        body.colors-on .dice { background: linear-gradient(145deg, #ff4081, #81c784); color: white; border: none; }
+        body.colors-on button { background-color: #0288d1; color: white; }
+
+        /* Schwarz-Weiß-Modus */
+        body.colors-off { background-color: #ffffff; }
+        body.colors-off .dice { background: #ffffff; color: #000000; border: 4px solid #000000; }
+        body.colors-off button { background-color: #000000; color: white; }
+
+        .dice {
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            transition: transform 0.2s, background 0.3s;
+        }
+        .rolling { transform: rotate(360deg) scale(0.8); }
+        
+        button, select {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .controls { margin-top: 20px; }
+    </style>
+</head>
+<body class="colors-on">
+
+    <div class="dice" id="dice">1</div>
+    <button onclick="rollDice()">Würfeln</button>
+
+    <div class="controls">
+        <label for="colorToggle">Farben:</label>
+        <select id="colorToggle" onchange="toggleColors(this.value)">
+            <option value="on">An (Bunt)</option>
+            <option value="off">Aus (Monochrom)</option>
+        </select>
+    </div>
+
+    <script>
+        function rollDice() {
+            const dice = document.getElementById('dice');
+            dice.classList.add('rolling');
+            
+            setTimeout(() => {
+                const result = Math.floor(Math.random() * 6) + 1;
+                dice.innerText = result;
+                dice.classList.remove('rolling');
+            }, 200);
+        }
+
+        function toggleColors(value) {
+            if (value === 'on') {
+                document.body.className = 'colors-on';
+            } else {
+                document.body.className = 'colors-off';
+            }
+        }
+    </script>
+</body>
+</html>
